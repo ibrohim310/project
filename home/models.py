@@ -1,26 +1,39 @@
 from django.db import models
 
-class Courses(models.Model):
-    title = models.CharField(max_length = 255)
-    body = models.TextField()
-    icon = models.ImageField()
 
 
-class Speciality(models.Model):
-    title = models.CharField(max_length = 255)
-    body = models.TextField()
-    icon = models.ImageField()
-
-
-class Blog(models.Model):
-    title = models.CharField(max_length = 255)
-    body = models.TextField()
-    is_active = models.BooleanField(default=True)
+class Category(models.Model):
+    name = models.CharField(max_length=255, unique = True)
 
     def __str__(self):
-        return f"murojat {self.first_name}dan"
+        return self.name
     
-    class Meta:
-        verbose_name = "Murojatlar royhati"
-        verbose_name_plural = "Murojatlar"
-        ordering = ("is_active",)
+
+class Region(models.Model):
+    name = models.CharField(max_length=255, unique = True)
+
+    def __str__(self):
+        return self.name
+    
+
+class Item(models.Model):
+    title = models.CharField(max_length=255)
+    body = models.TextField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    region = models.ForeignKey(Region,on_delete=models.CASCADE, null = True, blank=True)
+    is_active = models.BooleanField(default = True)
+    image = models.ImageField(upload_to = 'items/')
+#    models.OneToOneField(Category)
+#    models.ManyToManyField(Region)
+    def __str__(self):
+        return self.title
+
+
+
+class Form(models.Model):
+    name = models.CharField(max_length=255)
+    phone = models.CharField(max_length=13)
+    body = models.TextField()
+    email = models.EmailField()
+    is_checked = models.BooleanField(default = False)
+
