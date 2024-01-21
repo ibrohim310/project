@@ -25,5 +25,9 @@ urlpatterns = [
     path('dashb/form/create', views.create_form, name='create_form'),
     path('dashb/form/list', views.forms, name='forms'),
     path('dashb/form/update/<int:id>/', views.form_update, name='form_update'),
+    #authentication
+    path('auth/register', views.register_user, name='register_user'),
+    path('auth/sign-in', views.sign_in, name='sign_in'),
+    path('auth/sign-out', views.sign_out, name='sign_out'),
 
 ]

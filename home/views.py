@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.contrib import messages
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
 from . import models
 
 def index(request):
@@ -27,7 +30,7 @@ def courses(request):
     return render(request, 'conf/courses.html',context)
 
 # dashboard
-
+@login_required(login_url='sign_in')
 def dashboard(request):
     users = User.objects.all().count()
     news = models.Item.objects.filter(is_active=True).count()
@@ -198,3 +201,30 @@ def form_update(request, id):
     return render(request, 'dashb/form/update.html', {'form':form})
 
 
+
+#authentication
+
+def register_user(request):
+    if request.method == 'POST':
+        User.objects.create_user(
+            username = request.POST['username'],
+            password = request.POST['password']
+        )
+
+    return render(request, 'dashb/auth/register.html')
+
+
+def sign_in(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user:
+            login(request, user)
+            return redirect('dashb')
+    return render(request, 'dashb/auth/login.html')
+
+
+def sign_out(request):
+    logout(request)
+    return redirect('index')
